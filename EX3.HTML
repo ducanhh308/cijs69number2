@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div id="root" class="relative"></div>
+    <div class="fixed top-2 right-2 text-5xl text-red-500 " id="result">Point:0</div>
+    <script>
+        let correct =[]
+        let point = 0
+        fetch('https://opentdb.com/api.php?amount=5&category=21&difficulty=easy&type=multiple')
+        .then(res => res.json())
+        .then(data => data.results)
+        .then(results => {
+            let render = ''
+            
+            
+            results.forEach(element => {
+                let question = ''
+                question +=  `<h1 class="pt-2 font-bold pl-5">${element.question}</h1>`
+                let content = ''
+                const random = Math.floor(Math.random() * 3);
+                let answers = element.incorrect_answers
+                answers.splice(random, 0, element.correct_answer)
+                answers.forEach((a)=>{
+                    content += `<div class="cursor-pointer hover:bg-gray-500 pl-10 pb-2 " onclick="myFunction(this)">${a}</div>`
+                })
+                render +='<div>' + question + content + '</div>'
+                correct = correct.concat(element.correct_answer)
+            })
+            document.querySelector('#root').innerHTML = render
+            
+            
+        })
+        function myFunction(e){
+                
+               if(correct.indexOf(e.innerHTML) !== -1){
+                   point += 10
+                   document.querySelector('#result').innerHTML = `Point:${point}`
+                   console.log(document.querySelector('#result'))
+               }
+               e.parentNode.remove()
+            }
+    </script>
+</body>
+</html>
